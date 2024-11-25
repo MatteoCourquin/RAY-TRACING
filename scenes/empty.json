@@ -1,0 +1,14 @@
+{
+  "image": {
+      "width": 800,
+      "height": 600
+  },
+  "ambient": {
+      "r": 0,
+      "g": 0,
+      "b": 0
+  },
+  "reflections": 0,
+  "lights": [],
+  "objects": []
+}
