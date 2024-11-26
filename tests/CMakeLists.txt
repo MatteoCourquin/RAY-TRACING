@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.5.0)
 
+# Ajout de la recherche d'OpenSSL
+find_package(OpenSSL REQUIRED)
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -8,7 +11,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-add_executable(rayscene_tests TestSphere.cpp)
+
+add_executable(
+  rayscene_tests 
+  TestImage.cpp 
+)
 
 target_include_directories(rayscene_tests PUBLIC
   "${PROJECT_SOURCE_DIR}/src/raymath"
@@ -24,6 +31,7 @@ target_link_libraries(rayscene_tests
   raymath
   rayimage
   lodepng
+  OpenSSL::Crypto  # Ajout de la dépendance OpenSSL
 )
 
 enable_testing()
