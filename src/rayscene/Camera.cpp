@@ -73,21 +73,19 @@ void Camera::render(Image &image, Scene &scene)
 
   scene.prepare();
 
-  if (!threadingEnabled)
-  {
-    RenderSegment segment;
-    segment.height = height;
-    segment.image = &image;
-    segment.scene = &scene;
-    segment.intervalX = intervalX;
-    segment.intervalY = intervalY;
-    segment.reflections = Reflections;
-    segment.rowMin = 0;
-    segment.rowMax = image.height;
+#ifndef THREADING_ENABLED
+  RenderSegment segment;
+  segment.height = height;
+  segment.image = &image;
+  segment.scene = &scene;
+  segment.intervalX = intervalX;
+  segment.intervalY = intervalY;
+  segment.reflections = Reflections;
+  segment.rowMin = 0;
+  segment.rowMax = image.height;
 
-    renderSegment(&segment);
-    return;
-  }
+  renderSegment(&segment);
+#else
 
   // ? Get threas depend hardware
   auto num_threads = std::thread::hardware_concurrency();
@@ -123,6 +121,7 @@ void Camera::render(Image &image, Scene &scene)
   {
     thread.join();
   }
+#endif
 }
 
 std::ostream &operator<<(std::ostream &_stream, Camera &cam)

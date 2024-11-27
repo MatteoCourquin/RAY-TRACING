@@ -12,11 +12,11 @@ private:
   Vector3 B;
   Vector3 C;
 
+public:
   Vector3 tA;
   Vector3 tB;
   Vector3 tC;
 
-public:
   Triangle(Vector3 a, Vector3 b, Vector3 c);
   ~Triangle();
 

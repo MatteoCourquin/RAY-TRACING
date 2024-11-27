@@ -1,0 +1,18 @@
+monkey-on-plane.json :
+
+WITH AABB OPTIMIZATION :
+
+WITHOUT MULTI-THREADING
+Total time: 130.002 seconds.
+
+WITH MULTI-THREADING
+Total time: 21.035 seconds.
+
+
+WITHOUT AABB OPTIMIZATION :
+
+WITHOUT MULTI-THREADING
+Total time: 566.689 seconds.
+
+WITH MULTI-THREADING
+Total time: 60.513 seconds.

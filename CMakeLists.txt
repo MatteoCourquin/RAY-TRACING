@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(raytracer VERSION 0.1.0 LANGUAGES C CXX)
 
+option(ENABLE_THREADING "Enable multi-threading support" ON)
+if(ENABLE_THREADING)
+    add_compile_definitions(THREADING_ENABLED)
+    message(STATUS "Threading support: ENABLED")
+else()
+    message(STATUS "Threading support: DISABLED")
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
