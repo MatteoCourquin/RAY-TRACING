@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cmath>
+#include <thread>
+#include <vector>
 #include "Camera.hpp"
 #include "../raymath/Ray.hpp"
 
@@ -73,16 +75,40 @@ void Camera::render(Image &image, Scene &scene)
 
   scene.prepare();
 
-  RenderSegment *seg = new RenderSegment();
-  seg->height = height;
-  seg->image = &image;
-  seg->scene = &scene;
-  seg->intervalX = intervalX;
-  seg->intervalY = intervalY;
-  seg->reflections = Reflections;
-  seg->rowMin = 0;
-  seg->rowMax = image.height;
-  renderSegment(seg);
+  // ? Get threas depend hardware
+  auto num_threads = std::thread::hardware_concurrency();
+  std::vector<std::thread> threads;
+
+  // ? Calculate rows / thread
+  int rows_per_thread = image.height / num_threads;
+
+  // ? Create segments for each thread
+  std::vector<RenderSegment *> segments;
+  for (int i = 0; i < num_threads; ++i)
+  {
+    RenderSegment *seg = new RenderSegment();
+    seg->height = height;
+    seg->image = &image;
+    seg->scene = &scene;
+    seg->intervalX = intervalX;
+    seg->intervalY = intervalY;
+    seg->reflections = Reflections;
+    seg->rowMin = i * rows_per_thread;
+    seg->rowMax = (i == num_threads - 1) ? image.height : (i + 1) * rows_per_thread;
+    segments.push_back(seg);
+  }
+
+  // ? Start threads
+  for (unsigned int i = 0; i < num_threads; ++i)
+  {
+    threads.emplace_back(renderSegment, segments[i]);
+  }
+
+  // ? Assemble threads
+  for (auto &thread : threads)
+  {
+    thread.join();
+  }
 }
 
 std::ostream &operator<<(std::ostream &_stream, Camera &cam)

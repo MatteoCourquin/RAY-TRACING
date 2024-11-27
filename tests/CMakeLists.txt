@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5.0)
 
 # Ajout de la recherche d'OpenSSL
 find_package(OpenSSL REQUIRED)
+find_package(Threads REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -31,7 +32,8 @@ target_link_libraries(rayscene_tests
   raymath
   rayimage
   lodepng
-  OpenSSL::Crypto  # Ajout de la dépendance OpenSSL
+  OpenSSL::Crypto
+  Threads::Threads
 )
 
 enable_testing()
