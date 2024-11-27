@@ -9,6 +9,7 @@ class Camera
 {
 private:
   Vector3 position;
+  bool threadingEnabled = false;
 
 public:
   Camera();
@@ -19,6 +20,7 @@ public:
 
   Vector3 getPosition();
   void setPosition(Vector3 &pos);
+  void enableThreading() { threadingEnabled = true; }
 
   void render(Image &image, Scene &scene);
 

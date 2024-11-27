@@ -5,6 +5,8 @@
 #include <openssl/md5.h>
 #include <iomanip>
 
+bool g_threadingEnabled = true;
+
 std::string calculateMD5(const std::string &filename)
 {
   // ? Open file without conversion
@@ -42,11 +44,17 @@ std::string calculateMD5(const std::string &filename)
 
 TEST(SceneRenderTest, LoadAndRenderTwoSpheresScene)
 {
-  auto [scene, camera, image] = SceneLoader::Load("../scenes/iso-sphere-on-plane.json");
+  auto [scene, camera, image] = SceneLoader::Load("../scenes/two-spheres-on-plane.json");
 
-  const std::string referenceImagePath = "../reference/reference_image.png";
+  // const std::string referenceImagePath = "../reference/reference_image.png";
 
   auto begin = std::chrono::high_resolution_clock::now();
+
+  if (g_threadingEnabled)
+  {
+    camera->enableThreading();
+  }
+
   camera->render(*image, *scene);
 
   std::string generatedImagePath = "test_render.png";
@@ -54,19 +62,32 @@ TEST(SceneRenderTest, LoadAndRenderTwoSpheresScene)
   auto end = std::chrono::high_resolution_clock::now();
   auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
 
-  std::cout << "Done." << std::endl;
+  std::cout << "Done. (Threading: " << (g_threadingEnabled ? "ON" : "OFF") << ")" << std::endl;
   std::printf("Total time: %.3f seconds.\n", elapsed.count() * 1e-9);
 
   // std::string referenceHash = calculateMD5(referenceImagePath);
-  std::string referenceHash = "4a33ea1966836758798c83d8de2395fb";
+  std::string referenceHash = "f82f17d9b84f79cb6896db4785e89f69";
   std::string generatedHash = calculateMD5(generatedImagePath);
 
   EXPECT_EQ(generatedHash, referenceHash)
       << "L'image générée est différente de l'image de référence.\n"
       << "Hash de référence: " << referenceHash << "\n"
       << "Hash généré: " << generatedHash;
+}
 
-  delete scene;
-  delete camera;
-  delete image;
+int main(int argc, char **argv)
+{
+  testing::InitGoogleTest(&argc, argv);
+
+  for (int i = 1; i < argc; i++)
+  {
+    std::string arg = argv[i];
+    if (arg == "threading_off")
+    {
+      g_threadingEnabled = false;
+      std::cout << "Threading disabled" << std::endl;
+    }
+  }
+
+  return RUN_ALL_TESTS();
 }

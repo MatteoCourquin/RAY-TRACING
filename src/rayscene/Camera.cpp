@@ -45,7 +45,6 @@ void Camera::setPosition(Vector3 &pos)
  */
 void renderSegment(RenderSegment *segment)
 {
-
   for (int y = segment->rowMin; y < segment->rowMax; ++y)
   {
     double yCoord = (segment->height / 2.0) - (y * segment->intervalY);
@@ -66,7 +65,6 @@ void renderSegment(RenderSegment *segment)
 
 void Camera::render(Image &image, Scene &scene)
 {
-
   double ratio = (double)image.width / (double)image.height;
   double height = 1.0 / ratio;
 
@@ -74,6 +72,22 @@ void Camera::render(Image &image, Scene &scene)
   double intervalY = height / (double)image.height;
 
   scene.prepare();
+
+  if (!threadingEnabled)
+  {
+    RenderSegment segment;
+    segment.height = height;
+    segment.image = &image;
+    segment.scene = &scene;
+    segment.intervalX = intervalX;
+    segment.intervalY = intervalY;
+    segment.reflections = Reflections;
+    segment.rowMin = 0;
+    segment.rowMax = image.height;
+
+    renderSegment(&segment);
+    return;
+  }
 
   // ? Get threas depend hardware
   auto num_threads = std::thread::hardware_concurrency();
