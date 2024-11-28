@@ -42,6 +42,7 @@ std::vector<Light *> Scene::getLights()
   return lights;
 }
 
+// ADD AABB
 bool Scene::closestIntersection(Ray &r, Intersection &closest, CullingType culling)
 {
   Intersection intersection;

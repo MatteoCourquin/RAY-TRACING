@@ -42,9 +42,11 @@ std::string calculateMD5(const std::string &filename)
 
 TEST(SceneRenderTest, LoadAndRenderTwoSpheresScene)
 {
-  auto [scene, camera, image] = SceneLoader::Load("../scenes/monkey-on-plane.json");
+  // auto [scene, camera, image] = SceneLoader::Load("../scenes/two-spheres-on-plane.json");
+  // auto [scene, camera, image] = SceneLoader::Load("../scenes/monkey-on-plane.json");
+  auto [scene, camera, image] = SceneLoader::Load("../scenes/all.json");
 
-// const std::string referenceImagePath = "../reference/reference_image.png";
+  // const std::string referenceImagePath = "../reference/reference_image.png";
 
   auto begin = std::chrono::high_resolution_clock::now();
 
@@ -56,16 +58,16 @@ TEST(SceneRenderTest, LoadAndRenderTwoSpheresScene)
   auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
 
   std::cout << "Done. (Threading: "
-  #ifdef THREADING_ENABLED
-              << "ON"
-  #else
-              << "OFF"
-  #endif
+#ifdef THREADING_ENABLED
+            << "ON"
+#else
+            << "OFF"
+#endif
             << ")" << std::endl;
   std::printf("Total time: %.3f seconds.\n", elapsed.count() * 1e-9);
 
   // std::string referenceHash = calculateMD5(referenceImagePath);
-  std::string referenceHash = "5b1a0c0e9341d41e445b6c0baa0f0956";
+  std::string referenceHash = "c5eae36c2fcb07fcc9ae5e41be5c9f25";
   std::string generatedHash = calculateMD5(generatedImagePath);
 
   EXPECT_EQ(generatedHash, referenceHash)

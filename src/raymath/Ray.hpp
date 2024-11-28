@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include "Vector3.hpp"
 
@@ -14,11 +13,11 @@ public:
   Ray(Vector3 pos, Vector3 dir);
   ~Ray();
 
-  Vector3 GetPosition();
+  Vector3 GetPosition() const;
   void SetPosition(Vector3 &pos);
 
-  Vector3 GetDirection();
+  Vector3 GetDirection() const;
   void SetDirection(Vector3 &pos);
 
-  friend std::ostream &operator<<(std::ostream &_stream, Ray &vec);
+  friend std::ostream &operator<<(std::ostream &_stream, const Ray &vec);
 };
